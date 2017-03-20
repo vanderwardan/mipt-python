@@ -25,10 +25,9 @@ def format(input_name, output_name, w, b):
 
     for ind in range(0, len(words)):
         if (words[ind] == '\n'):
-            if (line_size != 0):
+            if (ind > 0 and words[ind - 1] == '\n'):
                 output.write('\n')
                 line_size = 0
-            else:
                 isParagraph = True
         elif (not checkASCII(words[ind][0])):
             if (isParagraph):
@@ -60,7 +59,7 @@ def format(input_name, output_name, w, b):
                 line_size = len(words[ind])
 
             # as I promised
-            if (isParagraph == True):
+            if (isParagraph):
                 isParagraph = False
         else:
             if (isParagraph):
@@ -84,7 +83,8 @@ def getWords(str):
             words.append(str[pos])
             pos += 1
         else:
-            while (pos < len(str) and str[pos] != ' ' and str[pos] != '\n' and not checkASCII(str[pos])):
+            while (pos < len(str) and str[pos] != ' ' and str[pos] != '\n'
+                   and not checkASCII(str[pos])):
                 pos += 1
             if (pos == len(str)):
                 words.append(str[oldpos:pos])
@@ -106,7 +106,8 @@ def printIndent(x, out):
 
 def checkASCII(c):
     a = ord(c)
-    if (a == 44 or a == 46 or a == 63 or a == 33 or a == 45 or a == 58 or a == 39):
+    if (a == 44 or a == 46 or a == 63 or a == 33 or a == 45
+        or a == 58 or a == 39):
         return True
     return False
 
@@ -147,7 +148,7 @@ def checkPossible(words, b, w):
                 line_size = len(words[ind])
 
             # as I promised
-            if (isParagraph == True):
+            if (isParagraph):
                 isParagraph = False
         else:
             if (isParagraph):
@@ -159,10 +160,14 @@ def checkPossible(words, b, w):
 
 def main():
     parser = argparse.ArgumentParser(description="Format text")
-    parser.add_argument('-i', '--input', type=str, default=sys.stdin, help='input file name')
-    parser.add_argument('-o', '--output', type=str, default=sys.stdout, help='output file name')
-    parser.add_argument('-l', '--line-length', type=int, default=None, help='max line length')
-    parser.add_argument('-p', '--paragraph-spaces', type=int, default=None, help='amount of spaces for paragraph')
+    parser.add_argument('-i', '--input', type=str, default=sys.stdin,
+                        help='input file name')
+    parser.add_argument('-o', '--output', type=str, default=sys.stdout,
+                        help='output file name')
+    parser.add_argument('-l', '--line-length', type=int, default=None,
+                        help='max line length')
+    parser.add_argument('-p', '--paragraph-spaces', type=int, default=None,
+                        help='amount of spaces for paragraph')
     args = parser.parse_args()
     format(args.input, args.output, args.line_length, args.paragraph_spaces)
 
